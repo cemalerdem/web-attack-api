@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30002.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notion.Api", "Notion.Api\Notion.Api.csproj", "{306F9B35-99A4-47E0-96E5-08A29AC4A996}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notion.DAL", "Notion.DAL\Notion.DAL.csproj", "{EDA431B8-4E9F-4E2A-9D53-95B6C383CC8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notion.Services", "Notion.Services\Notion.Services.csproj", "{A51AB81E-0B42-4E83-8835-18C4E46A93E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notion.Comman", "Notion.Comman\Notion.Comman.csproj", "{52BD452C-7646-46F9-834A-F0D18B5DC611}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{306F9B35-99A4-47E0-96E5-08A29AC4A996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{306F9B35-99A4-47E0-96E5-08A29AC4A996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{306F9B35-99A4-47E0-96E5-08A29AC4A996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{306F9B35-99A4-47E0-96E5-08A29AC4A996}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDA431B8-4E9F-4E2A-9D53-95B6C383CC8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDA431B8-4E9F-4E2A-9D53-95B6C383CC8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDA431B8-4E9F-4E2A-9D53-95B6C383CC8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDA431B8-4E9F-4E2A-9D53-95B6C383CC8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A51AB81E-0B42-4E83-8835-18C4E46A93E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A51AB81E-0B42-4E83-8835-18C4E46A93E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A51AB81E-0B42-4E83-8835-18C4E46A93E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A51AB81E-0B42-4E83-8835-18C4E46A93E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52BD452C-7646-46F9-834A-F0D18B5DC611}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52BD452C-7646-46F9-834A-F0D18B5DC611}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52BD452C-7646-46F9-834A-F0D18B5DC611}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52BD452C-7646-46F9-834A-F0D18B5DC611}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1C20CA24-38B7-4F29-8FB0-80225D1D916D}
+	EndGlobalSection
+EndGlobal
