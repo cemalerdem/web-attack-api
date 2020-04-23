@@ -8,10 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Notion.Api.Controllers.Base;
-using Notion.Comman.RequestModels;
+using Notion.Common.RequestModels;
 using Notion.Services.Abstract;
 using Notion.DAL.Entity.Concrete;
 using Microsoft.AspNetCore.Authorization;
+using System.Net.Mime;
+using Microsoft.AspNetCore.Http;
+using Notion.Comman.RequestModels;
+using Notion.Comman.ResponseModels;
 
 namespace Notion.Api.Controllers
 {
@@ -23,11 +27,13 @@ namespace Notion.Api.Controllers
         private readonly IConfiguration _config;
         public UserController(IUserService userService, IConfiguration config)
         {
-            _userService = userService; 
+            _userService = userService;
             _config = config;
-        } 
+        }
 
         [HttpPost("register")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Register(UserRegisterRequest request)
         {
             if (await _userService.UserExist(request.Email))
@@ -35,22 +41,26 @@ namespace Notion.Api.Controllers
 
             var userToCreate = new User
             {
-                Email = request.Email
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                
             };
 
             var createdUser = _userService.Register(userToCreate, request.Password);
-            return StatusCode(201,createdUser);
+            return StatusCode(201);
         }
-        
+
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserLoginRequest request)
+        public async Task<ActionResult<UserLoginResponse>> Login([FromBody]UserLoginRequest request)
         {
             var user = await _userService.Login(request.Email, request.Password);
-            if(user == null)
-                return Unauthorized();
-            
-            var claims = new []
+            if (user == null)
+                return Unauthorized("Email Address is not found");
+
+            var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Email)
@@ -71,8 +81,13 @@ namespace Notion.Api.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok(new {
-                token = tokenHandler.WriteToken(token)
+            return Ok(new UserLoginResponse
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Message = "User Logged in succesfully",
+                IsSuccess = true,
+                Token = tokenHandler.WriteToken(token)
             });
         }
 

@@ -5,8 +5,10 @@ namespace Notion.DAL.Context
 {
     public class AppDataContext : DbContext
     {
-        public AppDataContext(DbContextOptions<AppDataContext> options) : base(options)
-        { }
+        public AppDataContext(DbContextOptions<AppDataContext> options)
+        : base(options)
+    {
+    }
 
         public DbSet<User> Users { get; set; }
     }

@@ -11,6 +11,9 @@ using Notion.Services.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Notion.Api.Middleware;
+using FluentValidation.AspNetCore;
+using Notion.Comman.Middleware;
 
 namespace Notion.Api
 {
@@ -35,9 +38,16 @@ namespace Notion.Api
 
             services.AddDbContext<AppDataContext>(x => x.UseSqlServer
             (Configuration.GetConnectionString("DefaultConnection")));
+
+            //Service Layer
             services.ServiceLayerDependencies();
+
+            //Comman Layer
+            services.CommonLayerDependencies();
             services.ConfigureCors();
-            services.AddControllers();
+
+            services.AddControllers().AddFluentValidation();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => 
                 {
@@ -50,6 +60,7 @@ namespace Notion.Api
                         ValidateAudience = false
                     };
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,7 +70,8 @@ namespace Notion.Api
             {
                 app.UseDeveloperExceptionPage();
             }            
-
+            app.UseMiddleware<RequestMiddleware>();
+            app.UseMiddleware<ResponseMiddleware>();
             //app.UseHttpsRedirection();
             app.UseRouting();       
             app.UseAuthentication();

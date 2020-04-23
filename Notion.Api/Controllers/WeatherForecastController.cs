@@ -37,5 +37,12 @@ namespace Notion.Api.Controllers
             })
             .ToArray();
         }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public decimal Divide(int a, int b)
+        {
+            return a / b;
+        }
     }
 }

@@ -13,9 +13,11 @@ namespace Notion.Services.Concrete
     public class UserService : IUserService
     {
         private readonly AppDataContext _context;
-        public UserService(AppDataContext context)
+        private readonly IEmailService _emailService;
+        public UserService(AppDataContext context, IEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
         public async Task<User> Login(string email, string password)
         {
@@ -27,6 +29,7 @@ namespace Notion.Services.Concrete
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 return null;
 
+            await _emailService.SendEmailAsync(email, "Log In", "Logged in at : " + DateTime.Now);
             return user;
         }
 
