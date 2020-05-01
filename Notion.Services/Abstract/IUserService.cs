@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Notion.Comman.Dtos;
 using Notion.DAL.Entity.Concrete;
 using Notion.Services.Abstract.Base;
 

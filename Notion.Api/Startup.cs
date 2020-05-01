@@ -14,6 +14,7 @@ using System.Text;
 using Notion.Api.Middleware;
 using FluentValidation.AspNetCore;
 using Notion.Comman.Middleware;
+using Notion.DAL.Extensions;
 
 namespace Notion.Api
 {
@@ -30,14 +31,13 @@ namespace Notion.Api
         public void ConfigureServices(IServiceCollection services)
         {
             // Swagger Config
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My Api", Version = "v1" });
-            });
-
+            services.SwaggerConfiguration();
 
             services.AddDbContext<AppDataContext>(x => x.UseSqlServer
             (Configuration.GetConnectionString("DefaultConnection")));
+
+            //DAL Layer
+            services.DalLayerDependencies();
 
             //Service Layer
             services.ServiceLayerDependencies();
@@ -49,7 +49,7 @@ namespace Notion.Api
             services.AddControllers().AddFluentValidation();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => 
+                .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
@@ -59,6 +59,12 @@ namespace Notion.Api
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("RequireMemberRole", policy => policy.RequireRole("Admin, Member"));
             });
 
         }
@@ -69,17 +75,17 @@ namespace Notion.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }            
+            }
             app.UseMiddleware<RequestMiddleware>();
             app.UseMiddleware<ResponseMiddleware>();
             //app.UseHttpsRedirection();
-            app.UseRouting();       
+            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
-            {   
+            {
                 endpoints.MapControllers();
             });
 

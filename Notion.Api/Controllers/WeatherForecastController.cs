@@ -25,7 +25,7 @@ namespace Notion.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
@@ -38,7 +38,7 @@ namespace Notion.Api.Controllers
             .ToArray();
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Member")]
         [HttpPost]
         public decimal Divide(int a, int b)
         {

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Notion.Comman.Dtos;
 using Notion.DAL.Context;
 using Notion.DAL.Entity.Concrete;
 using Notion.Services.Abstract;
@@ -14,8 +16,10 @@ namespace Notion.Services.Concrete
     {
         private readonly AppDataContext _context;
         private readonly IEmailService _emailService;
-        public UserService(AppDataContext context, IEmailService emailService)
+        private readonly IMapper _mapper;
+        public UserService(AppDataContext context, IEmailService emailService, IMapper mapper)
         {
+            _mapper = mapper;
             _context = context;
             _emailService = emailService;
         }
@@ -26,8 +30,8 @@ namespace Notion.Services.Concrete
             if (user == null)
                 return null;
 
-            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-                return null;
+            //if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+            //    return null;
 
             await _emailService.SendEmailAsync(email, "Log In", "Logged in at : " + DateTime.Now);
             return user;
@@ -36,10 +40,11 @@ namespace Notion.Services.Concrete
 
         public async Task<User> Register(User user, string password)
         {
+
             CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            //user.PasswordHash = passwordHash;
+            //user.PasswordSalt = passwordSalt;
             user.CreatedAtUTC = DateTime.UtcNow;
 
             await _context.Users.AddAsync(user);
@@ -57,6 +62,7 @@ namespace Notion.Services.Concrete
         {
             return await _context.Users.ToListAsync();
         }
+
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
@@ -77,6 +83,7 @@ namespace Notion.Services.Concrete
             }
             return true;
         }
+
 
 
     }
