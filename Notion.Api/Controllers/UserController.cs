@@ -6,14 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Notion.Api.Controllers.Base;
 using Notion.Common.RequestModels;
 using Notion.Services.Abstract;
 using Notion.DAL.Entity.Concrete;
 using Microsoft.AspNetCore.Authorization;
-using System.Net.Mime;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using Notion.Api.Helpers;
 using Notion.Comman.RequestModels;
 using Notion.Comman.ResponseModels;
 
@@ -25,17 +27,28 @@ namespace Notion.Api.Controllers
     {
         private readonly IUserService _userService;
         private readonly IConfiguration _config;
-        public UserController(IUserService userService, IConfiguration config)
+        private readonly ILogger<UserController> _logger;
+        //private readonly GenerateJWTokens _generateJwTokens;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<Role> _roleManager;
+        public UserController(IUserService userService, IConfiguration config, ILogger<UserController> logger, /*GenerateJWTokens generateJwTokens,*/ UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager)
         {
             _userService = userService;
             _config = config;
+            _logger = logger;
+            //_generateJwTokens = generateJwTokens;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Register(UserRegisterRequest request)
+        //[ProducesResponseType(200, Type = typeof(UserRegisterResponse))]
+        public async Task<IActionResult> Register([FromBody]UserRegisterRequest request)
         {
+
             if (await _userService.UserExist(request.Email))
                 return BadRequest("Username already exist");
 
@@ -44,27 +57,105 @@ namespace Notion.Api.Controllers
                 Email = request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                
+                UserName = request.UserName
             };
+            var result = await _userManager.CreateAsync(userToCreate, request.Password);
+           
 
-            var createdUser = _userService.Register(userToCreate, request.Password);
-            return StatusCode(201);
+            //await _userManager.AddToRoleAsync(userToCreate, "Visitor");
+
+            if (result.Succeeded)
+            {
+                return Ok(new UserRegisterResponse
+                {
+                    Email = userToCreate.Email,
+                    FirstName = userToCreate.FirstName,
+                    LastName = userToCreate.LastName,
+                    IsSuccess = true,
+                    Message = "Registered Successfully"
+                });
+            }
+
+            return BadRequest(result.Errors);
         }
+
 
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("login")]
-        public async Task<ActionResult<UserLoginResponse>> Login([FromBody]UserLoginRequest request)
+        public async Task<ActionResult> Login([FromBody]UserLoginRequest request)
         {
-            var user = await _userService.Login(request.Email, request.Password);
-            if (user == null)
-                return Unauthorized("Email Address is not found");
+            var user = await _userManager.FindByEmailAsync(request.Email);
 
-            var claims = new[]
+            var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+
+            if (result.Succeeded)
+            {
+                return Ok(new UserLoginResponse
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    IsSuccess = true,
+                    Message = "Logged in Successfully",
+                    Token = await GenerateJwtToken(user)
+                });
+            }
+
+            return Unauthorized();
+        }
+
+        [HttpGet("get-users")]
+        public async Task GetUsers()
+        {
+            var users = await _userService.GetUsers();
+
+            var roles = new List<Role>
+            {
+                new Role{Name = "Member"},
+                new Role{Name = "Admin"}
+            };
+
+            foreach (var role in roles)
+            {
+                 _roleManager.CreateAsync(role).Wait();
+            }
+
+            foreach (var user in users)
+            {
+               await _userManager.AddToRoleAsync(user, "Member");
+            }
+
+            var adminUser = new User
+            {
+                UserName = "Admin",
+                Email = "superadmin@admin.com"
+            };
+
+            var result = _userManager.CreateAsync(adminUser, "Test1234+").Result;
+
+            if (result.Succeeded)
+            {
+                var admin = _userManager.FindByNameAsync("Admin").Result;
+                await _userManager.AddToRoleAsync(admin, "Admin");
+            }
+        }
+
+        private async Task<string> GenerateJwtToken(User user)
+        {
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Email)
             };
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
 
@@ -81,20 +172,8 @@ namespace Notion.Api.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok(new UserLoginResponse
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Message = "User Logged in succesfully",
-                IsSuccess = true,
-                Token = tokenHandler.WriteToken(token)
-            });
-        }
+            return tokenHandler.WriteToken(token);
 
-        [HttpGet]
-        public async Task<List<User>> GetUsers()
-        {
-            return await _userService.GetUsers();
         }
     }
 }

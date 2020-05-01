@@ -4,7 +4,7 @@ namespace Notion.Api.Controllers.Base
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class BaseController : ControllerBase
     {
 
