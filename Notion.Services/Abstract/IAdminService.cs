@@ -9,5 +9,7 @@ namespace Notion.Services.Abstract
     {
         Task<List<UserDto>> GetUsersWithRoles();
         Task<UserDto> EditUserRoles(string userName, string newRole);
+        Task SaveRequestModelToDatabase(RequestDto request);
+        Task<List<RequestDto>> GetRequestStreams();
     }
 }

@@ -15,6 +15,7 @@ using Notion.Api.Middleware;
 using FluentValidation.AspNetCore;
 using Notion.Comman.Middleware;
 using Notion.DAL.Extensions;
+using Notion.Api.Helpers;
 
 namespace Notion.Api
 {
@@ -67,6 +68,8 @@ namespace Notion.Api
                 options.AddPolicy("RequireMemberRole", policy => policy.RequireRole("Admin, Member"));
             });
 
+            services.AddSignalR();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,6 +89,7 @@ namespace Notion.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<NotificationHub>("/notificationhub");
                 endpoints.MapControllers();
             });
 

@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Notion.Comman.Dtos;
 using Notion.DAL.Context;
-using Notion.DAL.Entity.Concrete;
+using Notion.DAL.Entity.Concrete.Admin;
+using Notion.DAL.Entity.Concrete.User;
 using Notion.Services.Abstract;
 
 namespace Notion.Services.Concrete
@@ -66,6 +67,40 @@ namespace Notion.Services.Concrete
                 Roles = getUserNewRole.ToList()
             };
 
+            return result;
+        }
+
+        public async Task SaveRequestModelToDatabase(RequestDto request)
+        {
+            var entity = new RequestModel
+            {
+                CreatedAtUTC = request.CreatedAtUTC,
+                CreatedBy = request.CreatedBy,
+                MethodType = request.MethodType,
+                Path = request.Path,
+                QueryParameter = request.QueryParameter,
+                StatusCode = request.StatusCode,
+                RequestPayload = request.RequestPayload
+            };
+
+            _context.RequestModels.Add(entity);
+            await _context.SaveChangesAsync();
+
+        }
+
+        public async Task<List<RequestDto>> GetRequestStreams()
+        {
+            var requestStreamQuery = from request in _context.RequestModels
+                                     select new RequestDto
+                                     {
+                                         MethodType = request.MethodType,
+                                         QueryParameter = request.QueryParameter,
+                                         Path = request.Path,
+                                         StatusCode = request.StatusCode,
+                                         RequestPayload = request.RequestPayload,
+                                         CreatedBy = request.CreatedBy
+                                     };
+            var result = await requestStreamQuery.ToListAsync();
             return result;
         }
     }

@@ -9,15 +9,14 @@ using Microsoft.Extensions.Configuration;
 using Notion.Api.Controllers.Base;
 using Notion.Common.RequestModels;
 using Notion.Services.Abstract;
-using Notion.DAL.Entity.Concrete;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Notion.Api.Helpers;
 using Notion.Comman.RequestModels;
 using Notion.Comman.ResponseModels;
+using Notion.DAL.Entity.Concrete.User;
 
 namespace Notion.Api.Controllers
 {
