@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Notion.DAL.Context;
 
 namespace Notion.DAL.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    partial class AppDataContextModelSnapshot : ModelSnapshot
+    [Migration("20200506203607_EntityAdded")]
+    partial class EntityAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,8 +119,8 @@ namespace Notion.DAL.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MethodType")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("MethodType")
+                        .HasColumnType("int");
 
                     b.Property<string>("Path")
                         .HasColumnType("nvarchar(max)");
@@ -138,6 +140,8 @@ namespace Notion.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RequestModels");
+
+                    b.HasCheckConstraint("CK_RequestModels_MethodType_Enum_Constraint", "[MethodType] IN(1, 2, 3, 4)");
                 });
 
             modelBuilder.Entity("Notion.DAL.Entity.Concrete.Role", b =>

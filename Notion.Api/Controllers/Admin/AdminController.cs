@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Notion.Api.Controllers.Base;
+using Notion.Comman.Dtos;
 using Notion.Services.Abstract;
 
 namespace Notion.Api.Controllers.Admin
@@ -24,7 +26,7 @@ namespace Notion.Api.Controllers.Admin
         public async Task<IActionResult> GetUsersWithRoles()
         {
             var users = await _adminService.GetUsersWithRoles();
-            _logger.LogError("Failed to get user roles"+users);
+            _logger.LogError("Failed to get user roles" + users);
             return Ok(users);
         }
         [Authorize(Policy = "RequireAdminRole")]
@@ -33,6 +35,13 @@ namespace Notion.Api.Controllers.Admin
         {
             var editedUserRole = await _adminService.EditUserRoles(userName, newRole);
             return Ok(editedUserRole);
+        }
+
+        [HttpGet("request-stream")]
+        public async Task<List<RequestDto>> GetRequestStream()
+        {
+            var result =  await _adminService.GetRequestStreams();
+            return result;
         }
     }
 }

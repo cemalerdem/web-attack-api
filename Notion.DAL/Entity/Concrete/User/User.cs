@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
-namespace Notion.DAL.Entity.Concrete
+namespace Notion.DAL.Entity.Concrete.User
 {
     public class User : IdentityUser<Guid>
     {

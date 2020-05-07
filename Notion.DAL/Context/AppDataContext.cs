@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Notion.DAL.Entity.Concrete;
+using Notion.DAL.Entity.Concrete.Admin;
 using System;
+using Notion.DAL.Entity.Concrete.User;
 
 namespace Notion.DAL.Context
 {
@@ -13,6 +14,8 @@ namespace Notion.DAL.Context
         : base(options)
         {
         }
+
+        public DbSet<RequestModel> RequestModels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
