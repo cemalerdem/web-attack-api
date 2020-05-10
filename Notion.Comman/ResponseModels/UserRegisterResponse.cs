@@ -1,11 +1,14 @@
+using System;
+using System.Collections.Generic;
+
 namespace Notion.Comman.ResponseModels
 {
     public class UserRegisterResponse
     {
-        public string FirstName {get;set;}
-        public string LastName {get;set;}
-        public string Email {get;set;}
-        public string Message {get;set;}
-        public bool IsSuccess {get;set;}
+        public bool Successful { get; set; }
+        public IEnumerable<string> Error { get; set; }
+        public string Token { get; set; }
+        public Dictionary<string, string> UserInfo { get; set; }
+        public DateTime? ExpireDate { get; set; }
     }
 }

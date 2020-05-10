@@ -54,11 +54,14 @@ namespace Notion.Api
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["AppSettings:JwtIssuer"],
+                        ValidAudience = Configuration["AppSettings:JwtAudience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
-                            .GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
+                            .GetBytes(Configuration.GetSection("AppSettings:Token").Value))
                     };
                 });
 
