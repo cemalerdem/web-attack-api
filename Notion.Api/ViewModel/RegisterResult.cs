@@ -1,14 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace Notion.Comman.ResponseModels
+namespace Notion.Api.ViewModel
 {
-    public class UserLoginResponse
+    public class RegisterResult
     {
         public bool Successful { get; set; }
-        public string Error { get; set; }
-        public string Token { get; set; }
+        public IEnumerable<string> Errors { get; set; }
         public Dictionary<string, string> UserInfo { get; set; }
         public DateTime? ExpireDate { get; set; }
     }
-}
+}   

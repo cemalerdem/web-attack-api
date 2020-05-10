@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace Notion.Comman.ResponseModels
+namespace Notion.Api.ViewModel
 {
-    public class UserLoginResponse
+    public class LoginResult
     {
         public bool Successful { get; set; }
         public string Error { get; set; }
@@ -11,4 +11,6 @@ namespace Notion.Comman.ResponseModels
         public Dictionary<string, string> UserInfo { get; set; }
         public DateTime? ExpireDate { get; set; }
     }
+
+   
 }

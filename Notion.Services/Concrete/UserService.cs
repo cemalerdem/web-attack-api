@@ -4,11 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Notion.Comman.Dtos;
 using Notion.DAL.Context;
-using Notion.DAL.Entity.Concrete;
+using Notion.DAL.Entity.Concrete.User;
 using Notion.Services.Abstract;
-using Notion.Services.Abstract.Base;
 
 namespace Notion.Services.Concrete
 {
@@ -64,7 +62,7 @@ namespace Notion.Services.Concrete
         }
 
 
-        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using var hmac = new System.Security.Cryptography.HMACSHA512();
             passwordSalt = hmac.Key;

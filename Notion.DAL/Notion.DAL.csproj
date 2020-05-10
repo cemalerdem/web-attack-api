@@ -21,4 +21,7 @@
   <ItemGroup>
     <Folder Include="Entity\Concrete\Todo\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Notion.Comman\Notion.Comman.csproj" />
+  </ItemGroup>
 </Project>

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Notion.DAL.Entity.Concrete;
 
 namespace Notion.Comman.Dtos
 {

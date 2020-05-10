@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Notion.DAL.Context;
 using Notion.DAL.Entity.Concrete;
+using Notion.DAL.Entity.Concrete.User;
 
 namespace Notion.DAL.Extensions
 {
@@ -22,6 +23,7 @@ namespace Notion.DAL.Extensions
                 o.ExpireTimeSpan = TimeSpan.FromDays(5);
                 o.SlidingExpiration = true;
             });
+
 
             services.Configure<DataProtectionTokenProviderOptions>(o =>
                 o.TokenLifespan = TimeSpan.FromHours(3));
