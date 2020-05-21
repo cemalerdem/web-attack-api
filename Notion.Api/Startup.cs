@@ -72,16 +72,16 @@ namespace Notion.Api
             });
 
             services.AddSignalR();
+            //AddAzureSignalR("Endpoint=https://notionapisignalrservice.service.signalr.net;AccessKey=A/39QiysIjWME2eKZ6LeMa75rWl61drI63qLD4YLnho=;Version=1.0;");
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+
+            app.UseDeveloperExceptionPage();
+
             app.UseMiddleware<RequestMiddleware>();
             app.UseMiddleware<ResponseMiddleware>();
             //app.UseHttpsRedirection();
@@ -89,6 +89,12 @@ namespace Notion.Api
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors("CorsPolicy");
+
+            //app.UseAzureSignalR(routes =>
+            //{
+            //    routes.MapHub<NotificationHub>("/notificationhub");
+
+            //});
 
             app.UseEndpoints(endpoints =>
             {

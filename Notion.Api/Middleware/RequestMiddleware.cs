@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.SignalR;
 using Notion.Api.Helpers;
 using Notion.Comman.Dtos;
 using Notion.Services.Abstract;
-using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
@@ -38,14 +37,15 @@ namespace Notion.Api.Middleware
             
             var request = new RequestDto
             {
-                CreatedBy = context.User?.FindFirstValue(ClaimTypes.Email),
-                MethodType = context.Request.Method,
-                Path = context.Request.Path,
-                QueryParameter = context.Request.QueryString.ToString(),
-                StatusCode = context.Response.StatusCode.ToString(),
-                RequestPayload = requestBodyText,
-                CreatedAtUTC = DateTime.UtcNow
+                method = context.Request.Method,
+                path = context.Request.Path,
+                query = context.Request.QueryString.ToString(),
+                statusCode = context.Response.StatusCode.ToString(),
+                requestPayload = requestBodyText,
+                timestamp = ConvertDateTimeToTimestamp(DateTime.UtcNow)
             };
+            //var predictionResult = KerasPrediction.GetPredictionResponse(request);
+            //request.result = predictionResult.Result;
             await SaveRequestToDb(request);
 
             requestBodyStream.Seek(0, SeekOrigin.Begin);
@@ -65,7 +65,13 @@ namespace Notion.Api.Middleware
             await adminService.SaveRequestModelToDatabase(request);
         }
 
-        
+        private static double ConvertDateTimeToTimestamp(DateTime value)
+        {
+            TimeSpan epoch = (value - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime());
+            //return the total seconds (which is a UNIX timestamp)
+            return (double)epoch.TotalSeconds;
+        }
+
 
     }
 }
