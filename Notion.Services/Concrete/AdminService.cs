@@ -74,13 +74,12 @@ namespace Notion.Services.Concrete
         {
             var entity = new RequestModel
             {
-                CreatedAtUTC = request.CreatedAtUTC,
-                CreatedBy = request.CreatedBy,
-                MethodType = request.MethodType,
-                Path = request.Path,
-                QueryParameter = request.QueryParameter,
-                StatusCode = request.StatusCode,
-                RequestPayload = request.RequestPayload
+                CreatedAtUTC = DateTime.UtcNow,
+                MethodType = request.method,
+                Path = request.path,
+                QueryParameter = request.query,
+                StatusCode = request.statusCode,
+                RequestPayload = request.requestPayload
             };
 
             _context.RequestModels.Add(entity);
@@ -93,12 +92,11 @@ namespace Notion.Services.Concrete
             var requestStreamQuery = from request in _context.RequestModels
                                      select new RequestDto
                                      {
-                                         MethodType = request.MethodType,
-                                         QueryParameter = request.QueryParameter,
-                                         Path = request.Path,
-                                         StatusCode = request.StatusCode,
-                                         RequestPayload = request.RequestPayload,
-                                         CreatedBy = request.CreatedBy
+                                         method = request.MethodType,
+                                         query = request.QueryParameter,
+                                         path = request.Path,
+                                         statusCode = request.StatusCode,
+                                         requestPayload = request.RequestPayload
                                      };
             var result = await requestStreamQuery.ToListAsync();
             return result;

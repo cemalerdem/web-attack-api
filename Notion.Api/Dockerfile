@@ -1,14 +1,19 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS base
-WORKDIR /app
-EXPOSE 5000
-ENV ASPNETCORE_URLS=http://*:5000
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["Notion.Api.csproj", "./"]
-RUN dotnet restore "./Notion.Api.csproj"
+COPY ["Notion.Api/Notion.Api.csproj", "Notion.Api/"]
+COPY ["Notion.Comman/Notion.Comman.csproj", "Notion.Comman/"]
+COPY ["Notion.Services/Notion.Services.csproj", "Notion.Services/"]
+COPY ["Notion.DAL/Notion.DAL.csproj", "Notion.DAL/"]
+RUN dotnet restore "Notion.Api/Notion.Api.csproj"
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/src/Notion.Api"
 RUN dotnet build "Notion.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
