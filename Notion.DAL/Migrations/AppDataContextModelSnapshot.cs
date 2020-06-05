@@ -15,7 +15,7 @@ namespace Notion.DAL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.0-preview.2.20159.4")
+                .HasAnnotation("ProductVersion", "3.1.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -105,7 +105,7 @@ namespace Notion.DAL.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Notion.DAL.Entity.Concrete.Admin.RequestModel", b =>
+            modelBuilder.Entity("Notion.DAL.Entity.Concrete.Admin.RequestStream", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,9 +113,6 @@ namespace Notion.DAL.Migrations
 
                     b.Property<DateTime>("CreatedAtUTC")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MethodType")
                         .HasColumnType("nvarchar(max)");
@@ -129,6 +126,9 @@ namespace Notion.DAL.Migrations
                     b.Property<string>("RequestPayload")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Result")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("StatusCode")
                         .HasColumnType("nvarchar(max)");
 
@@ -137,10 +137,10 @@ namespace Notion.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RequestModels");
+                    b.ToTable("RequestStreams");
                 });
 
-            modelBuilder.Entity("Notion.DAL.Entity.Concrete.Role", b =>
+            modelBuilder.Entity("Notion.DAL.Entity.Concrete.User.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -168,7 +168,7 @@ namespace Notion.DAL.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
-            modelBuilder.Entity("Notion.DAL.Entity.Concrete.User", b =>
+            modelBuilder.Entity("Notion.DAL.Entity.Concrete.User.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -246,7 +246,7 @@ namespace Notion.DAL.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Notion.DAL.Entity.Concrete.UserRole", b =>
+            modelBuilder.Entity("Notion.DAL.Entity.Concrete.User.UserRole", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -263,7 +263,7 @@ namespace Notion.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Notion.DAL.Entity.Concrete.Role", null)
+                    b.HasOne("Notion.DAL.Entity.Concrete.User.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -272,7 +272,7 @@ namespace Notion.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Notion.DAL.Entity.Concrete.User", null)
+                    b.HasOne("Notion.DAL.Entity.Concrete.User.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -281,7 +281,7 @@ namespace Notion.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("Notion.DAL.Entity.Concrete.User", null)
+                    b.HasOne("Notion.DAL.Entity.Concrete.User.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -290,22 +290,22 @@ namespace Notion.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("Notion.DAL.Entity.Concrete.User", null)
+                    b.HasOne("Notion.DAL.Entity.Concrete.User.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Notion.DAL.Entity.Concrete.UserRole", b =>
+            modelBuilder.Entity("Notion.DAL.Entity.Concrete.User.UserRole", b =>
                 {
-                    b.HasOne("Notion.DAL.Entity.Concrete.Role", "Role")
+                    b.HasOne("Notion.DAL.Entity.Concrete.User.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Notion.DAL.Entity.Concrete.User", "User")
+                    b.HasOne("Notion.DAL.Entity.Concrete.User.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

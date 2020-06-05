@@ -54,14 +54,11 @@ namespace Notion.Api
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["AppSettings:JwtIssuer"],
-                        ValidAudience = Configuration["AppSettings:JwtAudience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
-                            .GetBytes(Configuration.GetSection("AppSettings:Token").Value))
+                            .GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
                     };
                 });
 
@@ -79,8 +76,9 @@ namespace Notion.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
+           
             app.UseDeveloperExceptionPage();
+            
 
             app.UseMiddleware<RequestMiddleware>();
             app.UseMiddleware<ResponseMiddleware>();
@@ -90,15 +88,12 @@ namespace Notion.Api
             app.UseAuthorization();
             app.UseCors("CorsPolicy");
 
-            //app.UseAzureSignalR(routes =>
-            //{
-            //    routes.MapHub<NotificationHub>("/notificationhub");
-
-            //});
+            app.UseSignalR(routes => { routes.MapHub<ChatHub>("/chat"); });
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<NotificationHub>("/notificationhub");
+                endpoints.MapHub<ChatHub>("/chat");
                 endpoints.MapControllers();
             });
 

@@ -8,4 +8,5 @@ namespace Notion.Services.Abstract
     {
         Task SendEmailAsync(string toEmail, string subject, string message);
     }
+    
 }

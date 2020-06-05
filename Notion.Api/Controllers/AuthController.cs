@@ -91,7 +91,7 @@ namespace Notion.Api.Controllers
                 new Claim("LastName", user.LastName)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["AppSettings:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
 
             var token = new JwtSecurityToken(
                 issuer: _config["AuthSettings:Issuer"],

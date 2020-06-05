@@ -107,7 +107,7 @@ namespace Notion.DAL.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Notion.DAL.Entity.Concrete.Admin.RequestModel", b =>
+            modelBuilder.Entity("Notion.DAL.Entity.Concrete.Admin.RequestStream", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

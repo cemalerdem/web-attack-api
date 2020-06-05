@@ -39,6 +39,23 @@ namespace Notion.Services.Concrete
 
             return userList;
         }
+        public async Task<List<UserListDto>> GetUsers()
+        {
+            var userList = await _context.Users
+                .OrderBy(x => x.UserName)
+                .Select(user => new UserListDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Role = (from userRole in user.UserRoles
+                        join role in _context.Roles on userRole.RoleId equals role.Id
+                        where role.Name != "Admin"
+                        select role.Name).FirstOrDefault()
+                }).ToListAsync();
+
+            return userList;
+        }
 
         public async Task<UserDto> EditUserRoles(string userName, string newRole)
         {
@@ -72,34 +89,54 @@ namespace Notion.Services.Concrete
 
         public async Task SaveRequestModelToDatabase(RequestDto request)
         {
-            var entity = new RequestModel
+            var entity = new RequestStream
             {
                 CreatedAtUTC = DateTime.UtcNow,
-                MethodType = request.method,
-                Path = request.path,
-                QueryParameter = request.query,
-                StatusCode = request.statusCode,
-                RequestPayload = request.requestPayload
+                MethodType = request.Method,
+                Path = request.Path,
+                QueryParameter = request.Query,
+                StatusCode = request.StatusCode,
+                RequestPayload = request.RequestPayload
             };
 
-            _context.RequestModels.Add(entity);
+            _context.RequestStreams.Add(entity);
             await _context.SaveChangesAsync();
 
         }
 
         public async Task<List<RequestDto>> GetRequestStreams()
         {
-            var requestStreamQuery = from request in _context.RequestModels
+            var requestStreamQuery = from request in _context.RequestStreams.OrderByDescending(x=>x.CreatedAtUTC)
                                      select new RequestDto
                                      {
-                                         method = request.MethodType,
-                                         query = request.QueryParameter,
-                                         path = request.Path,
-                                         statusCode = request.StatusCode,
-                                         requestPayload = request.RequestPayload
+                                         Method = request.MethodType,
+                                         Query = request.QueryParameter,
+                                         Path = request.Path,
+                                         StatusCode = request.StatusCode,
+                                         RequestPayload = request.RequestPayload
                                      };
-            var result = await requestStreamQuery.ToListAsync();
+            var result = await requestStreamQuery.Take(10).ToListAsync();
             return result;
+        }
+
+        public async Task<UserListDto> UpdateUserAsync(UserListDto user)
+        {
+            var existingUser = await _userManager.FindByIdAsync(user.Id.ToString());
+            if (user != null)
+            {
+                existingUser.Email = user.Email;
+                existingUser.UserName = user.UserName;
+                await _userManager.AddToRoleAsync(existingUser, user.Role);
+                return new UserListDto
+                {
+                    Id = existingUser.Id,
+                    UserName = existingUser.UserName,
+                    Email = existingUser.Email,
+                    Role = user.Role
+                };
+            }
+
+            return new UserListDto();
         }
     }
 }

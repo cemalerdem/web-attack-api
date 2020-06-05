@@ -15,6 +15,7 @@ namespace Notion.Services.Middleware
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IService, Service>();
             services.AddTransient<IEmailService, SendGridEmailSender>();
+            services.AddScoped<IDashboardService, DashboardService>();
             services.AddAutoMapper(typeof(UserService).Assembly);
             return services;
         }

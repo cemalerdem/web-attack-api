@@ -11,5 +11,9 @@ namespace Notion.Services.Abstract
         Task<UserDto> EditUserRoles(string userName, string newRole);
         Task SaveRequestModelToDatabase(RequestDto request);
         Task<List<RequestDto>> GetRequestStreams();
+        public Task<List<UserListDto>> GetUsers();
+        public Task<UserListDto> UpdateUserAsync(UserListDto user);
+
+
     }
 }

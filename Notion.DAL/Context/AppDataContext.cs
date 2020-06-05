@@ -15,7 +15,7 @@ namespace Notion.DAL.Context
         {
         }
 
-        public DbSet<RequestModel> RequestModels { get; set; }
+        public DbSet<RequestStream> RequestStreams { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

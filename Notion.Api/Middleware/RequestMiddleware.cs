@@ -9,6 +9,7 @@ using Notion.Comman.Dtos;
 using Notion.Services.Abstract;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Notion.DAL.Entity.Concrete.Admin;
 
 namespace Notion.Api.Middleware
 {
@@ -37,15 +38,16 @@ namespace Notion.Api.Middleware
             
             var request = new RequestDto
             {
-                method = context.Request.Method,
-                path = context.Request.Path,
-                query = context.Request.QueryString.ToString(),
-                statusCode = context.Response.StatusCode.ToString(),
-                requestPayload = requestBodyText,
-                timestamp = ConvertDateTimeToTimestamp(DateTime.UtcNow)
+                Method = context.Request.Method,
+                Path = context.Request.Path,
+                Query = context.Request.QueryString.ToString(),
+                StatusCode = context.Response.StatusCode.ToString(),
+                RequestPayload = requestBodyText,
+                CreatedAtUTC= DateTime.UtcNow
             };
-            //var predictionResult = KerasPrediction.GetPredictionResponse(request);
-            //request.result = predictionResult.Result;
+            
+            //var predictionResult = KerasPrediction.GetPredictionResponse(requestToPredict);
+            //request.Result = predictionResult.Result;
             await SaveRequestToDb(request);
 
             requestBodyStream.Seek(0, SeekOrigin.Begin);

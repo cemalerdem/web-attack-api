@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,13 @@ namespace Notion.Api.Controllers.Admin
             _logger.LogError("Failed to get user roles" + users);
             return Ok(users);
         }
+        [HttpGet("get-users")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _adminService.GetUsers();
+            _logger.LogError("Failed to get user roles" + users);
+            return Ok(users);
+        }
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPost("editRoles/{userName}")]
         public async Task<IActionResult> EditUserRoles(string userName, string newRole)
@@ -41,6 +49,13 @@ namespace Notion.Api.Controllers.Admin
         public async Task<List<RequestDto>> GetRequestStream()
         {
             var result =  await _adminService.GetRequestStreams();
+            return result;
+        }
+
+        [HttpPost("update-user")]
+        public async Task<UserListDto> UpdateUserAsync(UserListDto user)
+        {
+            var result = await _adminService.UpdateUserAsync(user);
             return result;
         }
     }

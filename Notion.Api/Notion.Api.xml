@@ -4,5 +4,28 @@
         <name>Notion.Api</name>
     </assembly>
     <members>
+        <member name="T:Notion.Api.Controllers.DashboardController">
+            <summary>
+            Dashboard controller to handle endpoints about dashboard
+            </summary>
+        </member>
+        <member name="M:Notion.Api.Controllers.DashboardController.#ctor(Notion.Services.Abstract.IDashboardService)">
+            <summary>
+            Public Controller for dependency injection.
+            </summary>
+            <param name="dashboardService"></param>
+        </member>
+        <member name="M:Notion.Api.Controllers.DashboardController.GetTotalRequestCard">
+            <summary>
+            Request to get total request type card information.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Notion.Api.Controllers.DashboardController.GetWeeklyRequestsAsync">
+            <summary>
+            Returns weekly request
+            </summary>
+            <returns></returns>
+        </member>
     </members>
 </doc>

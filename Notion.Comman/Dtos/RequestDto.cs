@@ -5,12 +5,12 @@ namespace Notion.Comman.Dtos
 {
     public class RequestDto
     {
-        public double timestamp { get; set; }
-        public string method { get; set; }
-        public string path { get; set; }
-        public string statusCode { get; set; }
-        public string query { get; set; }
-        public string requestPayload { get; set; }
-        public string result { get; set; }
+        public DateTime CreatedAtUTC { get; set; }
+        public string Method { get; set; }
+        public string Path { get; set; }
+        public string StatusCode { get; set; }
+        public string Query { get; set; }
+        public string RequestPayload { get; set; }
+        public string Result { get; set; }
     }
 }

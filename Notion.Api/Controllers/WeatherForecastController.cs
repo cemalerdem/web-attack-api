@@ -25,7 +25,7 @@ namespace Notion.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Route("get-numbers")]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
